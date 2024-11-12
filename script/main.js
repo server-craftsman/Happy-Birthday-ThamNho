@@ -26,6 +26,9 @@ const fetchData = () => {
 
 // Animation Timeline
 const animationTimeline = () => {
+  // Tạo đối tượng âm thanh
+  const audio = new Audio("sound/sound1.mp3");
+
   // Spit chars that needs to be animated individually
   const textBoxChars = document.getElementsByClassName("hbd-chatbox")[0];
   const hbd = document.getElementsByClassName("wish-hbd")[0];
@@ -54,6 +57,16 @@ const animationTimeline = () => {
 
   const tl = new TimelineMax();
 
+  // Đảm bảo âm thanh chỉ phát sau khi có sự kiện tương tác
+  const playAudio = () => {
+    audio.play().catch(error => {
+      console.error("Failed to play audio:", error);
+    });
+  };
+
+  // Play audio automatically
+  playAudio();
+
   tl
     .to(".container", 0.1, {
       visibility: "visible"
@@ -61,6 +74,9 @@ const animationTimeline = () => {
     .from(".one", 0.7, {
       opacity: 0,
       y: 10
+    })
+    .add(() => {
+      audio.play();
     })
     .from(".two", 0.4, {
       opacity: 0,
@@ -303,4 +319,6 @@ const animationTimeline = () => {
 };
 
 // Run fetch and animation in sequence
-fetchData();
+document.addEventListener("DOMContentLoaded", () => {
+  fetchData();
+});
