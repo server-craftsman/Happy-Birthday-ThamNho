@@ -1,3 +1,5 @@
+//Huy IT
+
 // Import the data to customize and insert them into page
 const fetchData = () => {
   fetch("customize.json")
@@ -26,19 +28,6 @@ const fetchData = () => {
 
 // Animation Timeline
 const animationTimeline = () => {
-  // Tạo đối tượng âm thanh
-  const audio = new Audio("sound/sound.mp3");
-
-  // Attempt to play the audio muted
-  audio.muted = true;
-  audio.play().then(() => {
-    // Unmute after a short delay
-    setTimeout(() => {
-      audio.muted = false;
-    }, 1000);
-  }).catch(error => {
-    console.error("Failed to autoplay audio:", error);
-  });
 
   // Spit chars that needs to be animated individually
   const textBoxChars = document.getElementsByClassName("hbd-chatbox")[0];
@@ -76,9 +65,9 @@ const animationTimeline = () => {
       opacity: 0,
       y: 10
     })
-    .add(() => {
-      audio.play();
-    })
+    // .add(() => {
+    //   audio.play();
+    // })
     .from(".two", 0.4, {
       opacity: 0,
       y: 10
@@ -319,7 +308,76 @@ const animationTimeline = () => {
   });
 };
 
+const setupAudioPrompt = () => {
+  const audioPrompt = document.createElement("div");
+  audioPrompt.innerHTML = `
+    <div id="audio-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: rgba(0, 0, 0, 0.8); z-index: 1000; animation: fadeIn 2s;">
+      <div style="background: #fff5e6; padding: 30px; border-radius: 10px; text-align: center; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); animation: pulse 1.5s infinite;">
+        <p style="font-size: 18px; color: #333; margin-bottom: 20px; animation: textFadeIn 3s;">Nghe nhạc cùng anh nhé em !!!</p>
+        <button id="enable-audio" style="background-color: #ff69b4; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; animation: buttonShake 2s infinite;">Bật nhạc</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(audioPrompt);
+
+  document.getElementById("enable-audio").addEventListener("click", () => {
+    const audio = new Audio("sound/sound1.mp3");
+    audio.play().catch(error => console.error("Autoplay failed:", error));
+    document.getElementById("audio-modal").style.display = "none"; // Hide modal after interaction
+
+    // Add transition animation
+    const transitionElement = document.createElement("div");
+    transitionElement.style.position = "fixed";
+    transitionElement.style.top = "0";
+    transitionElement.style.left = "0";
+    transitionElement.style.width = "100%";
+    transitionElement.style.height = "100%";
+    transitionElement.style.backgroundColor = "rgba(255, 255, 255, 0.8)";
+    transitionElement.style.zIndex = "999";
+    transitionElement.style.transition = "opacity 1s ease-in-out";
+    transitionElement.style.opacity = "1";
+    document.body.appendChild(transitionElement);
+
+    setTimeout(() => {
+      transitionElement.style.opacity = "0";
+      setTimeout(() => {
+        document.body.removeChild(transitionElement);
+        fetchData(); // Execute fetchData after animation
+      }, 1000); // Wait for the transition to complete
+    }, 500); // Delay before starting the transition
+  });
+};
+
+// Add CSS animations
+const style = document.createElement('style');
+style.innerHTML = `
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  @keyframes textFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes buttonShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+  }
+`;
+document.head.appendChild(style);
+
 // Run fetch and animation in sequence
 document.addEventListener("DOMContentLoaded", () => {
-  fetchData();
+  // setTimeout(playAudio, 1000);
+  // playAudioOnFocus();
+  // playAudioOnInteraction();
+  setupAudioPrompt();
+  // setTimeout(fetchData, 3000);
 });
