@@ -27,7 +27,18 @@ const fetchData = () => {
 // Animation Timeline
 const animationTimeline = () => {
   // Tạo đối tượng âm thanh
-  const audio = new Audio("sound/sound1.mp3");
+  const audio = new Audio("sound/sound.mp3");
+
+  // Attempt to play the audio muted
+  audio.muted = true;
+  audio.play().then(() => {
+    // Unmute after a short delay
+    setTimeout(() => {
+      audio.muted = false;
+    }, 1000);
+  }).catch(error => {
+    console.error("Failed to autoplay audio:", error);
+  });
 
   // Spit chars that needs to be animated individually
   const textBoxChars = document.getElementsByClassName("hbd-chatbox")[0];
@@ -56,16 +67,6 @@ const animationTimeline = () => {
   };
 
   const tl = new TimelineMax();
-
-  // Đảm bảo âm thanh chỉ phát sau khi có sự kiện tương tác
-  const playAudio = () => {
-    audio.play().catch(error => {
-      console.error("Failed to play audio:", error);
-    });
-  };
-
-  // Play audio automatically
-  playAudio();
 
   tl
     .to(".container", 0.1, {
