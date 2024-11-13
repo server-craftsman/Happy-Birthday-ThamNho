@@ -296,7 +296,11 @@ const animationTimeline = () => {
         rotation: 90
       },
       "+=1"
-    );
+    )
+    .to(".end-screen", 1, {
+      opacity: 1,
+      visibility: "visible"
+    });
 
   // tl.seek("currentStep");
   // tl.timeScale(2);
@@ -373,11 +377,64 @@ style.innerHTML = `
 `;
 document.head.appendChild(style);
 
+// Add end screen
+const addEndScreen = () => {
+  const endScreen = document.createElement("div");
+  endScreen.className = "end-screen";
+  endScreen.style.position = "fixed";
+  endScreen.style.top = "50%";
+  endScreen.style.left = "50%";
+  endScreen.style.transform = "translate(-50%, -50%)";
+  endScreen.style.width = "100%";
+  endScreen.style.height = "100%";
+  endScreen.style.background = "linear-gradient(135deg, rgba(0,0,0,0.9), rgba(20,20,20,0.95))";
+  endScreen.style.color = "#fff";
+  endScreen.style.display = "flex";
+  endScreen.style.flexDirection = "column";
+  endScreen.style.justifyContent = "center";
+  endScreen.style.alignItems = "center";
+  endScreen.style.opacity = "0";
+  endScreen.style.visibility = "hidden";
+  endScreen.style.transition = "all 1.5s cubic-bezier(0.4, 0, 0.2, 1)";
+  endScreen.style.backdropFilter = "blur(10px)";
+  endScreen.style.boxShadow = "0 0 100px rgba(255,255,255,0.1) inset";
+
+  const content = `
+    <div style="text-align: center; animation: fadeIn 2s ease-out">
+      <h1 style="font-size: 3em; margin-bottom: 30px; text-shadow: 0 0 20px rgba(255,255,255,0.5); animation: textFadeIn 1.5s ease-out">
+        ✨ Cảm ơn em vì đã xem hết nhé! ✨
+      </h1>
+      <div style="font-size: 1.5em; opacity: 0.9; animation: pulse 2s infinite">
+        <span style="color: #FFD700">★</span>
+        <span style="color: #FFA500">★</span>
+        <span style="color: #FF69B4">★</span>
+      </div>
+    </div>
+  `;
+
+  endScreen.innerHTML = content;
+
+  // Add sparkle effect
+  setInterval(() => {
+    const sparkle = document.createElement("div");
+    sparkle.style.position = "absolute";
+    sparkle.style.width = "4px";
+    sparkle.style.height = "4px";
+    sparkle.style.backgroundColor = "#fff";
+    sparkle.style.borderRadius = "50%";
+    sparkle.style.left = Math.random() * 100 + "%";
+    sparkle.style.top = Math.random() * 100 + "%";
+    sparkle.style.animation = "fadeIn 1s ease-out forwards";
+    endScreen.appendChild(sparkle);
+    setTimeout(() => sparkle.remove(), 1000);
+  }, 200);
+
+  document.body.appendChild(endScreen);
+};
+
 // Run fetch and animation in sequence
 document.addEventListener("DOMContentLoaded", () => {
-  // setTimeout(playAudio, 1000);
-  // playAudioOnFocus();
-  // playAudioOnInteraction();
   setupAudioPrompt();
+  addEndScreen(); // Add this line to initialize the end screen
   // setTimeout(fetchData, 3000);
 });
